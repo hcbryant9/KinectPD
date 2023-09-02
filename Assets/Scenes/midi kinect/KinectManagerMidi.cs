@@ -4,6 +4,7 @@ using UnityEngine;
 using Windows.Kinect;
 public class KinectManagerMidi : MonoBehaviour
 {
+    public LibPdInstance pdPatch;
     GameObject player;
     private BodySourceManager bodyManager;
 
@@ -21,6 +22,7 @@ public class KinectManagerMidi : MonoBehaviour
 
     void Update()
     {
+        
         //if we can't find a body just return
         if (bodyManager == null)
             return;
@@ -59,6 +61,7 @@ public class KinectManagerMidi : MonoBehaviour
                     relativePos[0] = body.Joints[Windows.Kinect.JointType.Head].Position.X;
                     relativePos[1] = body.Joints[Windows.Kinect.JointType.Head].Position.Y;
                     relativePos[2] = body.Joints[Windows.Kinect.JointType.Head].Position.Z;
+                    
                     initialized = true;
                 }
                 break;
@@ -73,8 +76,8 @@ public class KinectManagerMidi : MonoBehaviour
         }
         if (initialized)
         {
-            Debug.Log("REL : : X: " + relativePos[0] + ", Y: " + relativePos[1] + ", Z: " + relativePos[2]);
-            Debug.Log("HEAD : : X: " + headPos[0] + ", Y: " + headPos[1] + ", Z: " + headPos[2]);
+            //Debug.Log("REL : : X: " + relativePos[0] + ", Y: " + relativePos[1] + ", Z: " + relativePos[2]);
+            //Debug.Log("HEAD : : X: " + headPos[0] + ", Y: " + headPos[1] + ", Z: " + headPos[2]);
 
             //left and right motion
             float magnitudeLR = Mathf.Abs(headPos[0] - relativePos[0]);
@@ -87,14 +90,20 @@ public class KinectManagerMidi : MonoBehaviour
             {
                 if (headPos[0] > relativePos[0])
                 {
-
+                    
+                    pdPatch.SendFloat("test", magnitudeLR*400);
+                  
+                    Debug.Log("you went right and sent a message to PD (maybe) here is frequency you sent: " + magnitudeLR * 400);
                     //if the player leans to the right, go right
-                    player.transform.Translate(-player.transform.right * 0.125f, Space.World);
+                    //player.transform.Translate(-player.transform.right * 0.125f, Space.World);
                 }
                 else
                 {
+                    pdPatch.SendFloat("test", magnitudeLR * 400);
+
+                    Debug.Log("you went right and sent a message to PD (maybe) here is frequency you sent: " + magnitudeLR * 400);
                     //if the player leans to the left, go left
-                    player.transform.Translate(player.transform.right * 0.125f, Space.World);
+                    //player.transform.Translate(player.transform.right * 0.125f, Space.World);
 
                 }
             }
@@ -102,11 +111,11 @@ public class KinectManagerMidi : MonoBehaviour
             {
                 if (headPos[2] > relativePos[2])
                 {
-                    player.transform.Translate(player.transform.forward * 0.125f, Space.World);
+                    //player.transform.Translate(player.transform.forward * 0.125f, Space.World);
                 }
                 else
                 {
-                    player.transform.Translate(-player.transform.forward * 0.125f, Space.World);
+                    //player.transform.Translate(-player.transform.forward * 0.125f, Space.World);
                 }
                 
             }
