@@ -63,6 +63,8 @@ public class KinectManagerMidi : MonoBehaviour
                     relativePos[2] = body.Joints[Windows.Kinect.JointType.Head].Position.Z;
                     
                     initialized = true;
+                    //turning on the patch
+                    pdPatch.SendBang("triggerON");
                 }
                 break;
             }
@@ -72,6 +74,8 @@ public class KinectManagerMidi : MonoBehaviour
         //minimizes glitches involving walking away from camera
         if (rightHandPos[1] > headPos[1] && initialized)
         {
+            //turning off the patch
+            pdPatch.SendBang("triggerOFF");
             initialized = false;
         }
         if (initialized)
@@ -84,24 +88,24 @@ public class KinectManagerMidi : MonoBehaviour
 
             //forward and back motion
             float magnitudeFB = Mathf.Abs(headPos[2] - relativePos[2]);
-
+           
 
             if (magnitudeLR > 0.2)
             {
                 if (headPos[0] > relativePos[0])
                 {
                     
-                    pdPatch.SendFloat("test", magnitudeLR*400);
-                  
-                    Debug.Log("you went right and sent a message to PD (maybe) here is frequency you sent: " + magnitudeLR * 400);
+                    pdPatch.SendFloat("LR", magnitudeLR*400);
+                    //pdPatch.SendMessage("LR", magnitudeLR * 400);
+                    Debug.Log("you went right and sent a message to the bass (maybe) here is frequency you sent: " + magnitudeLR * 400);
                     //if the player leans to the right, go right
                     //player.transform.Translate(-player.transform.right * 0.125f, Space.World);
                 }
                 else
                 {
-                    pdPatch.SendFloat("test", magnitudeLR * 400);
-
-                    Debug.Log("you went right and sent a message to PD (maybe) here is frequency you sent: " + magnitudeLR * 400);
+                    pdPatch.SendFloat("LR", magnitudeLR * 400);
+                    //pdPatch.SendMessage("LR", magnitudeLR * 400);
+                    Debug.Log("you went left and sent a message to the bass (maybe) here is frequency you sent: " + magnitudeLR * 400);
                     //if the player leans to the left, go left
                     //player.transform.Translate(player.transform.right * 0.125f, Space.World);
 
@@ -111,10 +115,16 @@ public class KinectManagerMidi : MonoBehaviour
             {
                 if (headPos[2] > relativePos[2])
                 {
+                    pdPatch.SendFloat("FB", magnitudeFB * 400);
+                    //pdPatch.SendMessage("FB", magnitudeLR * 400);
+                    Debug.Log("you went forward and sent a message to the melody (maybe) here is frequency you sent: " + magnitudeFB * 700);
                     //player.transform.Translate(player.transform.forward * 0.125f, Space.World);
                 }
                 else
                 {
+                    pdPatch.SendFloat("FB", magnitudeFB * 400);
+                    //pdPatch.SendMessage("FB", magnitudeLR * 400);
+                    Debug.Log("you went back and sent a message to the melody (maybe) here is frequency you sent: " + magnitudeFB * 700);
                     //player.transform.Translate(-player.transform.forward * 0.125f, Space.World);
                 }
                 

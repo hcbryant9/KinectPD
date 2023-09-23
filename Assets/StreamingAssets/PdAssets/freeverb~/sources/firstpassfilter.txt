@@ -1,0 +1,41 @@
+
+
+
+
+Part of the freeverb design is a comb filter which consists of a delay buffer and a filter section. 
+The incoming audio is delayed and send to both the filter and the output. The filter output is fed 
+to both the delay buffer and the filter input. This means the first reflected signal is not filtered, 
+only the later reflections. The result is a clear reverb, characteristic of freeverb.
+
+The [firstpassfilter 1( message switches from the traditional output to a filtered outlet, having all 
+reflections pass through the filter. The effect is quite distinct for high [damping( values.
+
+ASCII art presentation of comb_processL:
+
+                     +---------------------<<------------------------+
+                     |                                               |
+  combfeedback -----(*)                                              |
+                     |     +----------+                              |
+         input -----(+)----| bufcombL |----+------------ output      |
+                           +----------+    |                         |
+                                           |                         |
+     combdamp2 ---------------------------(*)                        |
+                                           |     +--------------+    |
+                                          (+)----| filterstoreL |----+---- firstpassfilter output
+                                           |     +--------------+    |
+     combdamp1 ---------------------------(*)                        |
+                                           |                         |
+                                           +------------<<-----------+
+
+ (combdamp2 = 1 - combdamp1)
+
+
+allpass_processL:
+
+          input -----+---------------------------------------(*)----- -1
+                     |                                        |
+                     |    +-------------+     bufout          |
+                    (+)---| bufallpassL |-------+------------(+)----- output
+                     |    +-------------+       |
+                     |                          |
+allpassfeedback ----(*)--------<<---------------+

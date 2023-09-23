@@ -620,6 +620,7 @@ public class LibPdInstance : MonoBehaviour
 				// Open our patch.
 				patchPointer = libpd_openfile(patchName + ".pd",
 											  Application.streamingAssetsPath + patchDir);
+				Debug.Log("open to the patch" + patchName + ".pd at the path" + patchDir);
 				if(patchPointer == IntPtr.Zero)
 				{
 					Debug.LogError(gameObject.name +
